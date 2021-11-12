@@ -1,0 +1,24 @@
+function rollADie() {
+  let result = Math.floor(Math.random()*6 + 1);
+  return result;
+}
+
+function arrayTest() {
+  let myArray = [3, 2, 5, 9];
+  myArray.push(42);
+  Logger.log(myArray[3]);
+
+  return myArray;
+}
+
+function rollSomeDie(numberOfDice) {
+  if (numberOfDice < 1 || !numberOfDice) {
+    numberOfDice = 1;
+  }
+
+  let results = [];
+  while (results.length < numberOfDice) {
+    results.push(rollADie());
+  }
+  return results;
+}
