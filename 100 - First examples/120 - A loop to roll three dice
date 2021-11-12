@@ -1,0 +1,20 @@
+function rollADie() {
+  let result = Math.floor(Math.random()*6 + 1);
+  return result;
+}
+
+function arrayTest() {
+  let myArray = [3, 2, 5, 9];
+  myArray.push(42);
+  Logger.log(myArray[3]);
+
+  return myArray;
+}
+
+function rollSomeDie() {
+  let results = [];
+  while (results.length < 3) {
+    results.push(rollADie());
+  }
+  return results;
+}
