@@ -1,0 +1,20 @@
+// Returns a random value between 1 and 6 (inclusive).
+function rollADie() {
+  let result = Math.floor(Math.random()*6 + 1);
+  return result;
+}
+
+// Rolls the given number of dice and returns the results in an array.
+function rollSomeDie(numberOfDice) {
+  // Take care of some invalid input.
+  if (numberOfDice < 1 || !numberOfDice) {
+    numberOfDice = 1;
+  }
+
+  let results = [];
+  // Keep rolling until you've reached the specified number of dice.
+  while (results.length < numberOfDice) {
+    results.push(rollADie());
+  }
+  return results;
+}
