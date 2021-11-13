@@ -1,0 +1,24 @@
+// Reads card data from the spreadsheet.
+function readCardData() {
+  let cardDataRange = 'A3:P404';
+  let cardColums = {
+    color: 0,
+    cost: 5,
+    name: 7,
+    type: 10,
+    power: 14,
+    toughness: 15,
+  };
+
+  let cardData = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1').getRange(cardDataRange).getValues();
+
+  let cards = [];
+  for (let i in cardData) {
+    let card = {};
+    for (let j in cardColums) {
+      card[j] = cardData[i][cardColums[j]]
+    }
+    cards.push(card);
+  }
+  debugger;
+}
