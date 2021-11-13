@@ -1,0 +1,7 @@
+// Reads card data from the spreadsheet.
+function readCardData() {
+  let cardDataRange = 'A3:P404';
+
+  let cardData = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1').getRange(cardDataRange).getValues();
+  debugger;
+}
