@@ -1,0 +1,107 @@
+// Reads card data from the spreadsheet.
+function buildDeck() {
+  // Some initial data that might be changed.
+  let cardDataRange = 'A3:P420';
+  let cardColums = {
+    inDeck: 0,
+    color: 1,
+    cost: 6,
+    totalCost: 7,
+    name: 8,
+    type: 11,
+    power: 15,
+    toughness: 16,
+  };
+
+  // Get card data from the sheet.
+  let cardData = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1').getRange(cardDataRange).getValues();
+
+  // Add appropriate cards to a deck.
+  let deck = [];
+  for (let i in cardData) {
+    let card = {};
+    for (let j in cardColums) {
+      card[j] = cardData[i][cardColums[j]]
+    }
+    if (card.inDeck) {
+      setCardCost(card);
+      setCardProduction(card);
+      deck.push(card);
+    }
+  }
+
+  debugger;
+  return deck;
+}
+
+
+
+// Processes a card to allow easier reading of its cost.
+// The cost is stored under the property 'cost', with sub-properties for each
+// mana colour.
+function setCardCost(card) {
+  let mapping = {
+    '{W}': 'white',
+    '{U}': 'blue',
+    '{B}': 'black',
+    '{R}': 'red',
+    '{G}': 'green',
+    '{X}': 'other',
+  };
+
+  let cardCostData = card.cost;
+  let newCost = {
+    white: 0,
+    blue: 0,
+    black: 0,
+    red: 0,
+    green: 0,
+    other: 0,
+    any: 0,
+  };
+
+  // Check how many times each mana cost is present, add to the new cost.
+  let specialCost = 0;
+  for (let c in mapping) {
+    while (cardCostData.includes(c)) {
+      newCost[mapping[c]]++;
+      specialCost++;
+      // Remove the mana that was just added, so it's not added again.
+      cardCostData = cardCostData.replace(c, '');
+    }
+  }
+  newCost.any = card.totalCost - specialCost;
+
+  // Update the card.
+  card.cost = newCost;
+}
+
+// Sets the mana production of the card, in the property 'production'.
+// Each colour is represented by its own sub-property.
+function setCardProduction(card) {
+  // We're only checking for the basic land types.
+  let mapping = {
+    'Plains': {white: 1},
+    'Island': {blue: 1},
+    'Swamp': {black: 1},
+    'Mountain': {red: 1},
+    'Forest': {green: 1},
+  };
+
+  // Look for the defined land types. Set its production.
+  for (let i in mapping) {
+    if (card.name == i) {
+      card.production = mapping[i];
+    }
+  }
+
+  // Set the rest of production colours to zero.
+  if (!card.production) {
+    card.production = {};
+  }
+  for (let i of ['white', 'blue', 'black', 'red', 'green']) {
+    if (!card.production[i]) {
+      card.production[i] = 0;
+    }
+  }
+}
