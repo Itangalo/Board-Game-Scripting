@@ -1,0 +1,64 @@
+// Reads card data from the spreadsheet.
+function readCardData() {
+  let cardDataRange = 'A3:P420';
+  let cardColums = {
+    inDeck: 0,
+    color: 1,
+    cost: 6,
+    totalCost: 7,
+    name: 8,
+    type: 11,
+    power: 15,
+    toughness: 16,
+  };
+
+  let cardData = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1').getRange(cardDataRange).getValues();
+
+  let deck = [];
+  for (let i in cardData) {
+    let card = {};
+    for (let j in cardColums) {
+      card[j] = cardData[i][cardColums[j]]
+    }
+    if (card.inDeck) {
+      deck.push(card);
+    }
+  }
+  debugger;
+
+
+  for (let i in deck) {
+    setCardCost(deck[i]);
+  }
+}
+
+
+
+
+function setCardCost(card) {
+  let mapping = {
+    '{W}': 'white',
+    '{U}': 'blue',
+    '{B}': 'black',
+    '{R}': 'red',
+    '{G}': 'green',
+    '{X}': 'other',
+  };
+
+  let cardCostData = card.cost;
+  let newCost = {
+    white: 0,
+    blue: 0,
+    black: 0,
+    red: 0,
+    green: 0,
+    other: 0,
+  };
+
+  for (let c in mapping) {
+    if (cardCostData.includes(c)) {
+      Logger.log(card.name + ': Cost contains ' + c);
+    }
+  }
+
+}
