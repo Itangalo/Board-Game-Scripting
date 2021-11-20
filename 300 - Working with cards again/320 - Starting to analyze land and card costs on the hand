@@ -1,0 +1,64 @@
+// Shuffles the deck and draws 7 card, checking if a land + card can be played.
+// Does this 'iterations' times, and returns statistics of the results.
+function simulation(iterations = 1) {
+  // Get some data that only is built once.
+  let initialDeck = buildDeck();
+
+  // Start iterating.
+  for (let iteration = 0; iteration < iterations; iteration++) {
+    // Set up the deck/game.
+    let deck = JSON.parse(JSON.stringify(initialDeck));
+    shuffle(deck);
+
+    let hand = [];
+    for (let i = 0; i < 7; i++) {
+      hand.push(deck.shift());
+    }
+
+    // Check if we can play both a land and a card.
+    let production = {
+      white: 0,
+      blue: 0,
+      black: 0,
+      red: 0,
+      green: 0,
+    };
+    for (let i in hand) {
+      if (hand[i].type2 == 'Land') {
+        for (let j in hand[i].production) {
+          production[j] += hand[i].production[j];
+        }
+      }
+    }
+
+    for (let i in hand) {
+      if (hand[i].totalCost == 1) {
+        if (hand[i].cost.any == 1 || costFitsInProduction(hand[i].cost, production)) {
+          // We're fine.
+        }
+      }
+    }
+    debugger
+  }
+
+}
+
+
+// Code taken from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}
